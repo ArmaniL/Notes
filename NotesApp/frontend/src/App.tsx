@@ -1,6 +1,6 @@
 import * as React from "react";
-
+import Note from "./components/Note";
 
 export default function App() {
-    return <h1>Hello</h1>
+    return <Note header="Example" content="oevnoiervneiovr" lastUpdated="yesterday"></Note>
 }
