@@ -12,6 +12,12 @@ type Note struct {
 	Content          string `json:"content" bson:"content"`
 }
 
+type User struct {
+	mgm.DefaultModel `bson:",inline"`
+	User             string   `bson:"user"`
+	SharedWith       []string `bson:"shared_with"`
+}
+
 func NewNote(header, content, user string) *Note {
 	return &Note{
 		User:    user,
