@@ -27,9 +27,28 @@ func UpdateNote(header, content, user string) error {
 	return err
 }
 
-func ListNotes() ([]Note, error) {
+func ListNotes(email string) ([]Note, error) {
 	result := []Note{}
-	err := mgm.Coll(&Note{}).SimpleFind(&result, bson.M{})
+	err := mgm.Coll(&Note{}).SimpleFind(&result, bson.M{"user": email})
 
 	return result, err
+}
+
+func GetUser(email, password string) (User, error) {
+	user := User{}
+	err := mgm.Coll(&User{}).First(bson.M{"user": email}, &user)
+	return user, err
+}
+
+func DoesUserExist(email string) (bool, error) {
+	result := []User{}
+	err := mgm.Coll(&User{}).SimpleFind(&result, bson.M{"email": email})
+	return len(result) > 0, err
+}
+
+func CreateUser(email, password string) error {
+	user := NewUser(email, password)
+	// Make sure to pass the model by reference (to update the model's "updated_at", "created_at" and "id" fields by mgm).
+	err := mgm.Coll(user).Create(user)
+	return err
 }
