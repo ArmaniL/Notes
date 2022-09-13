@@ -11,9 +11,9 @@ export default function NoteGrid(props: { notes: Array<NoteProps> }) {
 
         <Grid container spacing={3}>
 
-            {notes.map((note) => {
+            {notes.map((note, noteIndex) => {
                 return (
-                    <Grid item xs={4}>
+                    <Grid item xs={4} key={noteIndex}>
                         <Note {...note} ></Note>
                     </Grid>
                 )

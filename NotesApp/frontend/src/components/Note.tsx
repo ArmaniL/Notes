@@ -12,12 +12,12 @@ export default function Note(props: NoteProps) {
     const { header, content, lastUpdated } = props;
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card style={{ cursor: "pointer" }} sx={{ maxWidth: 345 }}>
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {header}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography paragraph={true} variant="body2" color="text.secondary">
                     {content}
                 </Typography>
             </CardContent>

@@ -6,8 +6,8 @@ import {
     Routes,
 
 } from "react-router-dom";
-import NoteGrid from "./components/NoteGrid";
 import HomePage from "./components/HomePage";
+import NewNoteForm from "./components/NewNoteForm";
 
 export default function App() {
     const [token, setToken] = React.useState<string>("")
@@ -15,6 +15,8 @@ export default function App() {
         <Routes>
             <Route path="/" element={<LoginForm authControls={setToken}></LoginForm>}></Route>
             <Route path="/dashboard" element={<HomePage token={token} />}></Route>
+            <Route path="/new-note" element={<NewNoteForm token={token} />}></Route>
+
         </Routes>
     </Router>
 }
