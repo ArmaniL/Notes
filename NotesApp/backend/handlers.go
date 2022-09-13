@@ -105,7 +105,7 @@ func GetNotesHandler(c *gin.Context) {
 	var email string
 	authHeader := c.Request.Header.Get("Authorization")
 	tokenString := authHeader[len("Bearer"):]
-	fmt.Println(tokenString)
+	fmt.Printf("token:%s\n", tokenString)
 	email, err := DecodeToken(tokenString)
 
 	if err != nil {
