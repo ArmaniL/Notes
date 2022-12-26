@@ -13,6 +13,14 @@ type Note struct {
 	Content          string `json:"content" bson:"content"`
 }
 
+type UpdateNoteParameters struct {
+	NoteID string `json:"noteID"`
+	// Either the header or content
+	Parameter string `json:"parameter"`
+	// Is the actual data for the parameter
+	Data string `json:"data"`
+}
+
 type User struct {
 	mgm.DefaultModel `bson:",inline"`
 	User             string   `json:"email"  bson:"user"`

@@ -21,8 +21,22 @@ func CreateNote(header, content, user string) error {
 	return err
 }
 
-func UpdateNote(header, content, user string) error {
-	note := NewNote(header, content, user)
+func FindNoteById(idString string) (*Note, error) {
+
+	note := &Note{}
+	err := mgm.Coll(note).FindByID(idString, note)
+
+	return note, err
+}
+
+func UpdateNote(note *Note, params UpdateNoteParameters) error {
+	data := params.Data
+	if params.Parameter == "Header" {
+		note.Header = data
+	} else if params.Parameter == "Content" {
+		note.Content = data
+	}
+
 	err := mgm.Coll(note).Update(note)
 	return err
 }

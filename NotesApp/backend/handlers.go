@@ -5,10 +5,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
+
+func AuthRequiredMiddleware(c *gin.Context) {
+	var email string
+	authHeader := c.Request.Header.Get("Authorization")
+	if authHeader == "" {
+		c.AbortWithStatus(403)
+		return
+	}
+
+	tokenString := authHeader[len("Bearer"):]
+	tokenString = strings.TrimSpace(tokenString)
+	//fmt.Printf("token:%s\n", tokenString)
+	email, err := DecodeToken(tokenString)
+	if err != nil {
+		c.AbortWithStatus(403)
+		return
+	}
+	c.Request.Header.Add("Email", email)
+
+}
 
 func SignUpHandler(c *gin.Context) {
 	email, password, bodyErr, jsonErr := ParseUserInfo(c.Request.Body)
@@ -101,21 +122,45 @@ func LoginHandler(c *gin.Context) {
 
 }
 
-func GetNotesHandler(c *gin.Context) {
-	var email string
-	authHeader := c.Request.Header.Get("Authorization")
-	tokenString := authHeader[len("Bearer"):]
-	fmt.Printf("token:%s\n", tokenString)
-	email, err := DecodeToken(tokenString)
+func UpdateNoteHandler(c *gin.Context) {
+	body, err := ioutil.ReadAll(c.Request.Body)
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "No user found",
+			"message": "Error Reading Request Body ",
+		})
+
+	}
+	var params UpdateNoteParameters
+	json.Unmarshal(body, &params)
+
+	note, err := FindNoteById(params.NoteID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error Updating Note",
 		})
 		return
 	}
 
+	err = UpdateNote(note, params)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error Updating Note",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Note Updated Succesfully",
+	})
+
+}
+
+func GetNotesHandler(c *gin.Context) {
+	var email string
+	email = c.Request.Header.Get("Email")
 	result, err := ListNotes(email)
 
 	if err != nil {
@@ -135,7 +180,7 @@ func CreateNoteHandler(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Error Creating Note",
+			"message": "Error Reading Request Body ",
 		})
 
 	}

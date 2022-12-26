@@ -52,7 +52,6 @@ func ParseUserInfo(Body io.ReadCloser) (string, string, error, error) {
 
 func GenerateToken(user string) (string, error) {
 	secret := GoDotEnvVariable("SECRET")
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": user,
 	})
@@ -71,10 +70,14 @@ func DecodeToken(token string) (string, error) {
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(GoDotEnvVariable("SECRET")), nil
+		secret := GoDotEnvVariable("SECRET")
+		return []byte(secret), nil
 	})
 
-	fmt.Println(parsedToken)
+	if err != nil {
+
+		return "", err
+	}
 
 	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
 		g := claims["email"]
