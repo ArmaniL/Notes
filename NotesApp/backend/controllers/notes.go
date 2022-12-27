@@ -65,7 +65,7 @@ func GetNotesHandler(c *gin.Context) {
 
 // to be finished
 func GetNoteByIDHandler(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Incorrect Query Parameter",
