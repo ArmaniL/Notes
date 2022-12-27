@@ -97,8 +97,9 @@ func LoginHandler(c *gin.Context) {
 
 	c.SetCookie("token", token, 8640, "/", "localhost", true, true)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Succesful Login",
-		"token":   token,
+		"message":      "Succesful Login",
+		"token":        token,
+		"shared_notes": user.SharedNotes,
 	})
 
 }

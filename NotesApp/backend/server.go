@@ -17,6 +17,7 @@ func main() {
 	r.Use(middlewares.CORSMiddleware)
 	r.POST("/notes/share", middlewares.AuthRequiredMiddleware, controllers.ShareNoteHandler)
 	r.GET("/notes", middlewares.AuthRequiredMiddleware, controllers.GetNotesHandler)
+	r.GET("/note", middlewares.AuthRequiredMiddleware, controllers.GetNoteByIDHandler)
 	r.POST("/notes", middlewares.AuthRequiredMiddleware, controllers.CreateNoteHandler)
 	r.PUT("/notes", middlewares.AuthRequiredMiddleware, controllers.UpdateNoteHandler)
 	r.POST("/login", controllers.LoginHandler)

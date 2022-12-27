@@ -62,6 +62,38 @@ func GetNotesHandler(c *gin.Context) {
 	})
 
 }
+
+// to be finished
+func GetNoteByIDHandler(c *gin.Context) {
+	id := c.Query("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Incorrect Query Parameter",
+		})
+		return
+	}
+	note, err := db.FindNoteById(id)
+
+	if note.User != c.Request.Header.Get("Email") {
+		c.JSON(http.StatusForbidden, gin.H{
+			"message": "Error Retrieving Note",
+		})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error Retrieving Note",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"note": note,
+	})
+
+}
+
 func CreateNoteHandler(c *gin.Context) {
 	body, err := io.ReadAll(c.Request.Body)
 

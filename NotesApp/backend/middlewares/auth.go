@@ -24,5 +24,5 @@ func AuthRequiredMiddleware(c *gin.Context) {
 		return
 	}
 	c.Request.Header.Add("Email", email)
-
+	c.Next()
 }
