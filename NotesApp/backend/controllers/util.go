@@ -50,8 +50,6 @@ func DecodeToken(token string) (string, error) {
 	}
 
 	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
-		g := claims["email"]
-		fmt.Println(g)
 		return claims["email"].(string), nil
 	}
 
