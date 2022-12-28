@@ -2,7 +2,8 @@ package main
 
 import (
 	"NotesApp/config"
-	"NotesApp/controllers"
+	notes "NotesApp/controllers/notes"
+	users "NotesApp/controllers/users"
 	"NotesApp/db"
 	"NotesApp/middlewares"
 
@@ -15,13 +16,14 @@ func main() {
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 	r.Use(middlewares.CORSMiddleware)
-	r.POST("/notes/share", middlewares.AuthRequiredMiddleware, controllers.ShareNoteHandler)
-	r.GET("/notes", middlewares.AuthRequiredMiddleware, controllers.GetNotesHandler)
-	r.GET("/note", middlewares.AuthRequiredMiddleware, controllers.GetNoteByIDHandler)
-	r.POST("/notes", middlewares.AuthRequiredMiddleware, controllers.CreateNoteHandler)
-	r.PUT("/notes", middlewares.AuthRequiredMiddleware, controllers.UpdateNoteHandler)
-	r.POST("/login", controllers.LoginHandler)
-	r.POST("/signup", controllers.SignUpHandler)
+	r.POST("/notes/share", middlewares.AuthRequiredMiddleware, users.ShareNoteHandler)
+	r.GET("/notes", middlewares.AuthRequiredMiddleware, notes.GetNotesHandler)
+	r.GET("/notes/:id", middlewares.AuthRequiredMiddleware, notes.GetNoteByIDHandler)
+	r.POST("/notes", middlewares.AuthRequiredMiddleware, notes.CreateNoteHandler)
+	r.PUT("/notes", middlewares.AuthRequiredMiddleware, notes.UpdateNoteHandler)
+	r.DELETE("/notes/:id", middlewares.AuthRequiredMiddleware, notes.DeleteNoteHandler)
+	r.POST("/login", users.LoginHandler)
+	r.POST("/signup", users.SignUpHandler)
 	port := config.GoDotEnvVariable("PORT")
 	r.Run(port)
 }

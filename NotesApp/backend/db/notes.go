@@ -40,3 +40,8 @@ func ListNotes(email string) ([]model.Note, error) {
 
 	return result, err
 }
+
+func DeleteNote(note *model.Note) error {
+	err := mgm.Coll(note).Delete(note)
+	return err
+}

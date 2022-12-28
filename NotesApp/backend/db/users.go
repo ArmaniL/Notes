@@ -56,3 +56,12 @@ func GetUserIdFromEmail(email string) (string, error) {
 	err := mgm.Coll(&model.User{}).SimpleFind(&result, bson.M{"user": email})
 	return result[0].ID.String(), err
 }
+
+func DeleteUser(id string) error {
+	user, err := FindUserById(id)
+	if err != nil {
+		return err
+	}
+	err = mgm.Coll(user).Delete(user)
+	return err
+}

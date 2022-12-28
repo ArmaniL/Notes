@@ -1,2 +1,4 @@
 .env
-.DS_*
+.DS_Store
+server
+../../.DS_Store
