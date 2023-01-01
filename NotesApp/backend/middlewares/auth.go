@@ -2,6 +2,8 @@ package middlewares
 
 import (
 	"NotesApp/controllers"
+	"NotesApp/db"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -17,12 +19,24 @@ func AuthRequiredMiddleware(c *gin.Context) {
 
 	tokenString := authHeader[len("Bearer"):]
 	tokenString = strings.TrimSpace(tokenString)
-	//fmt.Printf("token:%s\n", tokenString)
 	email, err := controllers.DecodeToken(tokenString)
 	if err != nil {
-		c.AbortWithStatus(403)
+		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
+
+	userExists, err := db.DoesUserExist(email)
+
+	if !userExists {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
 	c.Request.Header.Add("Email", email)
 	c.Next()
 }

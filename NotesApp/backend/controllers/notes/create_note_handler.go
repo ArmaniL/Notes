@@ -11,6 +11,7 @@ import (
 )
 
 func CreateNoteHandler(c *gin.Context) {
+	email := c.Request.Header.Get("Email")
 	body, err := io.ReadAll(c.Request.Body)
 
 	if err != nil {
@@ -20,14 +21,29 @@ func CreateNoteHandler(c *gin.Context) {
 
 	}
 	var note model.Note
-	json.Unmarshal(body, &note)
-	db.CreateNote(note.Header, note.Content, note.User)
+	err = json.Unmarshal(body, &note)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error Parsing Body",
+		})
+		return
+	}
+	if note.Header == "" || note.Content == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid Body",
+		})
+		return
+	}
+
+	err = db.CreateNote(note.Header, note.Content, email)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Error Creating Note",
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Note Created",
 	})

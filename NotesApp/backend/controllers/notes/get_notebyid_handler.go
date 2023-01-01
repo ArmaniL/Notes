@@ -18,11 +18,25 @@ func GetNoteByIDHandler(c *gin.Context) {
 	}
 	note, err := db.FindNoteById(id)
 
-	if note.User != c.Request.Header.Get("Email") {
-		c.JSON(http.StatusForbidden, gin.H{
-			"message": "Error Retrieving Note",
-		})
-		return
+	userEmail := c.Request.Header.Get("Email")
+	if note.User != userEmail {
+		//must work on this
+		userHasAccess, err := db.DoesUserHaveAccessToNote(note, userEmail)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Server Error",
+			})
+			return
+
+		}
+
+		if !userHasAccess {
+			c.JSON(http.StatusForbidden, gin.H{
+				"message": "Error Retrieving Note",
+			})
+			return
+		}
 	}
 
 	if err != nil {

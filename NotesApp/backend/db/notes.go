@@ -2,6 +2,7 @@ package db
 
 import (
 	"NotesApp/model"
+	"sort"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,11 +38,28 @@ func UpdateNote(note *model.Note, params model.UpdateNotePayload) error {
 func ListNotes(email string) ([]model.Note, error) {
 	result := []model.Note{}
 	err := mgm.Coll(&model.Note{}).SimpleFind(&result, bson.M{"user": email})
-
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].UpdatedAt.After(result[j].UpdatedAt)
+	})
 	return result, err
 }
 
 func DeleteNote(note *model.Note) error {
 	err := mgm.Coll(note).Delete(note)
 	return err
+}
+
+func DoesUserHaveAccessToNote(note *model.Note, email string) (bool, error) {
+	user, err := GetUserFromEmail(email)
+	if err != nil {
+		return false, err
+	}
+	idString := note.ID.String()
+	idDigits := idString[10:34]
+	for _, noteId := range user.SharedNotes {
+		if noteId == idDigits {
+			return true, nil
+		}
+	}
+	return false, nil
 }

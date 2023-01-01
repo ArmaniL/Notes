@@ -1,4 +1,7 @@
+../frontend/*
 .env
 .DS_Store
 server
 ../../.DS_Store
+go.mod
+go.sum
