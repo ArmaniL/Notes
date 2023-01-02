@@ -13,10 +13,16 @@ const setOptions = function (token: string, httpVerb: string, payload?: any) {
             'Content-Type': 'application/x-www-form-urlencoded',
         }),
         body: JSON.stringify(payload)
-    }
+    } 
 }
 
 
+export const getNote = async function (token: string, id: string) {
+    const requestOptions = setOptions(token, "GET");
+    const response = await fetch(`${baseUrl}/${id}`,requestOptions)
+    const { note } = (await response.json());
+    return note;
+}
 
 export const getNotes = async function (token: string) {
     const requestOptions = setOptions(token, "GET");
@@ -29,4 +35,20 @@ export const getNotes = async function (token: string) {
 export const saveNote = async function (token: string, { header, content, user }: NotePayload) {
     const requestOptions = setOptions(token, "POST", { header, content, user });
     const response = await fetch(baseUrl, requestOptions)
+    return response
+}
+
+export const deleteNote =  async function (token:string,noteId:string){
+    const requestOptions =  setOptions(token,"DELETE");
+    const response = await fetch(`${baseUrl}/${noteId}`,requestOptions)
+    return response
+}
+
+export const shareNote = async function (token:string ,noteId:string,email:string) {
+    const requestOptions =  setOptions(token,"POST",{email,
+        noteID:noteId
+    });
+    const response = await fetch(`${baseUrl}/share`,requestOptions)
+    return response
+    
 }

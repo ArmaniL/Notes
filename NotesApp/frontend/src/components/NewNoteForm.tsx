@@ -4,8 +4,11 @@ import TextField from "@mui/material/TextField";
 import IconButton from '@mui/material/IconButton';
 import { saveNote } from '../apiCalls';
 import { Navigate } from 'react-router-dom'
+import { UserContext } from '../App';
 
 export default function NewNoteForm(props: any) {
+    const {userInfo} = React.useContext(UserContext);
+    const {token } =  userInfo
     const [header, setHeader] = React.useState<string>("");
     const [content, setContent] = React.useState<string>("");
     const [submitted, setSubmitted] = React.useState<boolean>(false);
@@ -44,9 +47,9 @@ export default function NewNoteForm(props: any) {
             <Grid item xs={12}>
                 <IconButton onClick={
                     async () => {
-                        console.log(props.token, header, content)
+                        console.log(token, header, content)
                         const user = localStorage.getItem('user')
-                        await saveNote(props.token, { header, content, user })
+                        await saveNote(token, { header, content, user })
                         setSubmitted(true)
                     }
                 } >
