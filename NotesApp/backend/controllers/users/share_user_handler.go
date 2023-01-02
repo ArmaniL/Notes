@@ -25,13 +25,34 @@ func ShareNoteHandler(c *gin.Context) {
 	userEmail := payload.Email
 	noteID := payload.NoteID
 
-	err = db.ShareNoteWithUser(userEmail, noteID)
+	userExists, err := db.DoesUserExist(userEmail)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
+
+	if !userExists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Not Real User",
+		})
+		return
+
+	}
+
+	err = db.ShareNoteWithUser(userEmail, noteID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Success",
+	})
 
 }

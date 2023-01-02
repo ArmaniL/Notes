@@ -3,9 +3,9 @@ package model
 type UpdateNotePayload struct {
 	NoteID string `json:"noteID"`
 	// Either the header or content
-	Parameter string `json:"parameter"`
+	Header string `json:"header"`
 	// Is the actual data for the parameter
-	Data string `json:"data"`
+	Content string `json:"content"`
 }
 
 type ShareNotePayload struct {

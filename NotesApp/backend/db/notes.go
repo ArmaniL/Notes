@@ -24,11 +24,11 @@ func FindNoteById(idString string) (*model.Note, error) {
 }
 
 func UpdateNote(note *model.Note, params model.UpdateNotePayload) error {
-	data := params.Data
-	if params.Parameter == "Header" {
-		note.Header = data
-	} else if params.Parameter == "Content" {
-		note.Content = data
+
+	if params.Header != "" {
+		note.Header = params.Header
+	} else if params.Content != "" {
+		note.Content = params.Content
 	}
 
 	err := mgm.Coll(note).Update(note)

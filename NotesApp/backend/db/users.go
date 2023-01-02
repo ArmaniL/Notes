@@ -2,6 +2,7 @@ package db
 
 import (
 	"NotesApp/model"
+	"errors"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,6 +29,9 @@ func ShareNoteWithUser(email string, noteId string) error {
 
 	if err != nil {
 		return err
+	}
+	if len(result) < 1 {
+		return errors.New("user do not exist")
 	}
 
 	user := result[0]
