@@ -3,7 +3,7 @@ const baseUrl = "http://localhost:1000/notes";
 interface NotePayload {
     header: string,
     content: string,
-    user: string
+    user?: string
 }
 const setOptions = function (token: string, httpVerb: string, payload?: any) {
     return {
@@ -32,8 +32,8 @@ export const getNotes = async function (token: string) {
 
 }
 
-export const saveNote = async function (token: string, { header, content, user }: NotePayload) {
-    const requestOptions = setOptions(token, "POST", { header, content, user });
+export const saveNote = async function (token: string, { header, content }: NotePayload) {
+    const requestOptions = setOptions(token, "POST", { header, content });
     const response = await fetch(baseUrl, requestOptions)
     return response
 }
@@ -52,3 +52,10 @@ export const shareNote = async function (token:string ,noteId:string,email:strin
     return response
     
 }
+
+export const updateNote = async function (token: string, { header, content, noteID }:any) {
+    const requestOptions = setOptions(token, "POST", { content,header,noteID });
+    const response = await fetch(baseUrl, requestOptions)
+    return response
+}
+

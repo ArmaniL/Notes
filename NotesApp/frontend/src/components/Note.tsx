@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { ShareItem } from "./ShareNotePopover";
+import { Navigate } from "react-router";
 export interface NoteProps {
   id: string;
   header: string;
@@ -27,6 +28,7 @@ export interface NoteProps {
 export default function Note(props: NoteProps) {
   const { id, header, content, lastUpdated, authenticationToken, remove } =
     props;
+  const [goToPage, setGotoPage] = React.useState<Boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [popAnchor, setpopAnchor] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,6 +49,10 @@ export default function Note(props: NoteProps) {
 
   const popOpen = Boolean(popAnchor);
   const type = popOpen ? "simple-popover" : undefined;
+
+  if (goToPage) {
+    return <Navigate to={"/note"} state={{ id, header, content }}></Navigate>;
+  }
 
   return (
     <Card
@@ -92,7 +98,7 @@ export default function Note(props: NoteProps) {
           </>
         }
       ></CardHeader>
-      <CardContent>
+      <CardContent onClick={() => setGotoPage(true)}>
         <Typography gutterBottom variant="h5" component="div">
           {header}
         </Typography>
